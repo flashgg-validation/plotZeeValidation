@@ -177,14 +177,24 @@ def test(fnameMC, fnameData, makeOutput=False, fraction = None):
         c = []
         for i in xrange(len(hmc)):
             c.append(ROOT.TCanvas("c"+str(i), ""))
+            legend = ROOT.TLegend(0.13,0.74,0.32,0.87);
+            c.append(legend)
+
             hmc[i].Scale(hdata[i].Integral()/hmc[i].Integral())
             hmcCorr[i].Scale(hdata[i].Integral()/hmcCorr[i].Integral())
             hmc[i].Draw("HIST")
+            legend.AddEntry(hmc[i],"MC")
+
             hmc[i].SetLineColor(ROOT.kRed)
             hmcCorr[i].Draw("SAMEHIST")
+            legend.AddEntry(hmcCorr[i],"MC corr.")
+
             hmcCorr[i].SetLineColor(ROOT.kBlue)
             hdata[i].Draw("SAMEPE")
             hdata[i].SetMarkerStyle(20)
+            legend.AddEntry(hdata[i],"data")
+
+            legend.Draw()
 
         print "plotting done, press enter to continue"
         raw_input()
