@@ -19,6 +19,10 @@ def test(makeOutput=False):
     
     if (not makeOutput):
         trans = ROOT.TFile("transformation.root")
+
+        if not trans.IsOpen():
+            raise Exception("could not open file transformation.root for reading")
+
         for t in transfName:
             graphs.append(trans.Get(t))
         
