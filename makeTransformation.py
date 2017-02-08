@@ -212,6 +212,10 @@ def makeTransformation():
     global hmc, hdata, transfName, plotNameData, plotNameMC, plotDef      
 
     f = ROOT.TFile("inputHistos.root")
+
+    if not f.IsOpen():
+        raise Exception("could not open file inputHistos.root for reading")
+
     for p in plotNameData:
         hdata.append(f.Get(p))
 
