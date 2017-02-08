@@ -13,7 +13,7 @@ plotNameData = ["hetaWidthdata_EB", "hetaWidthdata_EE", "hs4data_EB", "hs4data_E
 plotNameMC   = ["hetaWidthmc_EB", "hetaWidthmc_EE", "hs4mc_EB", "hs4mc_EE", "hfull5x5r9mc_EB", "hfull5x5r9mc_EE"]
 plotDef      = [(1000, 0.000, 0.02), (1000, 0, 0.05), (1000, 0, 1), (1000, 0, 1), (1000, 0, 1), (1000, 0, 1)]
 
-def test(makeOutput=False):
+def test(fnameMC, fnameData, makeOutput=False, fraction = None):
     graphs = []
     trans = ""
     
@@ -44,7 +44,7 @@ def test(makeOutput=False):
 
             histoList.append(ROOT.TH1F(plotNames[z] + suffix, title, plotDef[z][0], plotDef[z][1], plotDef[z][2]))
 
-    filenames = [sys.argv[-2], sys.argv[-1]]
+    filenames = [ fnameMC, fnameData ]
     for nf, f in enumerate(filenames):
 
         print "processing",f
@@ -250,9 +250,23 @@ if (__name__ == "__main__"):
 
     (options, arg) = parser.parse_args()
 
+
+    if options.preparePlots or options.test:
+        if len(arg) != 2:
+            print >> sys.stderr, "must specify exactly two ROOT files"
+            sys.exit(1)
+    
+    if options.transform:
+        if len(argv) != 0:
+            print >> sys.stderr, "no non-option arguments expected"
+            sys.exit(1)
+            
+
+    fnameMC, fnameData = arg
+
     if (options.preparePlots):
         print "Preparing necessary plots..."
-        test(True)   
+        test(fnameMC, fnameData, True)   
         print "Done."
         sys.exit(0)
     elif (options.transform): 
@@ -262,6 +276,6 @@ if (__name__ == "__main__"):
         sys.exit(0)
     elif (options.test): 
         print "Testing..."
-        test(False)
+        test(fnameMC, fnameData, False)
         print "Done."
         sys.exit(0)
