@@ -94,6 +94,14 @@ def test(fnameMC, fnameData, makeOutput=False, fraction = None):
 
         entries = t.GetEntries()
 
+        if fraction != None:
+            assert fraction >= 0 
+            assert fraction <= 1
+
+            entries = (int) ( entries * fraction + 0.5)
+            entries = min(entries, t.GetEntries())
+            entries = max(entries, 0)
+
         for z in xrange(entries):
             if (z+1) % 5000 == 0:
                print "processing entry %d/%d (%5.1f%%)\r" % (z + 1, entries, (z+1) / float(entries) * 100.),
@@ -246,7 +254,11 @@ if (__name__ == "__main__"):
     parser.add_option("-p", "--prepare-plots", dest="preparePlots", action="store_true", help="Dump plots", default=False)
     parser.add_option("-c", "--transform", action="store_true", help="Derive actual transformations", default=False)
     parser.add_option("-t", "--test", action="store_true", help="Test transformations", default=False)
-    # parser.add_option(
+    parser.add_option("--fraction", 
+                      type = float,
+                      help="fraction of events to run on when testing (in the range 0..1)",
+                      default = None,
+                      )
 
     (options, arg) = parser.parse_args()
 
@@ -266,7 +278,7 @@ if (__name__ == "__main__"):
 
     if (options.preparePlots):
         print "Preparing necessary plots..."
-        test(fnameMC, fnameData, True)   
+        test(fnameMC, fnameData, True, fraction = options.fraction)   
         print "Done."
         sys.exit(0)
     elif (options.transform): 
@@ -276,6 +288,6 @@ if (__name__ == "__main__"):
         sys.exit(0)
     elif (options.test): 
         print "Testing..."
-        test(fnameMC, fnameData, False)
+        test(fnameMC, fnameData, False, fraction = options.fraction)
         print "Done."
         sys.exit(0)
